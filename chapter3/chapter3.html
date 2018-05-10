@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>让场景动起来</title>
+  <script src="../js/three.js"></script>
+  <script src="../js/Stats.js"></script>
+  <script>
+    /**
+     * 场景动起来的方法：
+     *    1、物体在坐标系里移动，摄像机不动
+     *    2、摄像机在坐标系里移动，物体不动
+     *    3、渲染循环，需要渲物体运动的每一个过程，渲染的时候调用渲染器的rander函数
+     *    4、使用动画引擎来产生动画效果
+     *
+     * 若改变物体的属性，必须重新调用render()函数，才能将新的场景绘制到浏览器中去。不然浏览器是不会自动刷新场景
+     *
+     * 游戏循环(渲染循环): 循环渲染的最好方式，是让画面执行一个循环，不断的调用render来重绘，这个循环就是渲染循环，在游戏中，也叫游戏循环，
+     *                   实现循环需要用到requestAnimationFrame函数，传递一个callback参数，则在下一个动画帧时，会调用callback这个函数
+     */
+
+    var renderer;
+    var stats;
+    function initThree() {
+      renderer = new THREE.WebGLRenderer({
+        antialias : true
+      });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+      renderer.setClearColor(0xFFFFFF, 1.0);
+
+      stats = new Stats();
+      stats.setMode(1); // 0: fps, 1: ms
+      // 将stats的界面对应左上角
+      stats.domElement.style.position = 'absolute';
+      stats.domElement.style.left = '0px';
+      stats.domElement.style.top = '0px';
+      document.body.appendChild( stats.domElement );
+    }
+
+    var camera;
+    function initCamera() {
+      camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
+      camera.position.x = 0;
+      camera.position.y = 0;
+      camera.position.z = 600;
+      camera.up.x = 0;
+      camera.up.y = 1;
+      camera.up.z = 0;
+      camera.lookAt({
+        x : 0,
+        y : 0,
+        z : 0
+      });
+    }
+
+    var scene;
+    function initScene() {
+      scene = new THREE.Scene();
+    }
+
+    var light;
+    function initLight() {
+      light = new THREE.AmbientLight(0xFFFFFF);
+      light.position.set(100, 100, 200);
+      scene.add(light);
+      light = new THREE.PointLight(0x00FF00);
+      light.position.set(0, 0,300);
+      scene.add(light);
+    }
+    var mesh;
+    function initObject() {
+      var geometry = new THREE.CylinderGeometry( 100,150,400);
+      var material = new THREE.MeshLambertMaterial( { color:0xFFFF00} );
+      mesh = new THREE.Mesh( geometry,material);
+      mesh.position = new THREE.Vector3(0,0,0);
+      scene.add(mesh);
+    }
+
+    function threeStart() {
+      initThree();
+      initCamera();
+      initScene();
+      initLight();
+      initObject();
+      animation();
+
+      // setInterval( function () {
+      //   stats.begin();
+      //   // 你的每一帧的代码
+      //   stats.end();
+      // }, 1000 / 60 );
+    }
+    function animation()
+    {
+      //renderer.clear();
+      //camera.position.x =camera.position.x +1;
+      mesh.position.x-=1;
+      renderer.render(scene, camera);
+      requestAnimationFrame(animation);
+      stats.update();
+    }
+
+  </script>
+</head>
+<body onload="threeStart();">
+
+</body>
+</html>

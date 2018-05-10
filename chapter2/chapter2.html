@@ -2,9 +2,93 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Title</title>
+  <title>点、线、面(坐标平面图)</title>
+  <script src="../js/three.js"></script>
+  <script>
+    /**
+     * 3D世界组成: 3D世界由点组成，两个点能够组成一条直线，三个不在一条直线上的点组成一个三角面，无数三角形面组成各种形状的物体
+     *
+     * 网格模型(Mesh模型): 无数三角形面组成的各种形状的物体
+     *
+     * 纹理: 给网格模型贴上的皮肤
+     *
+     * THREE中的点: THREE.Vector3(x,y,z),一个坐标点由x,y,z三个分量构成，点可由右手坐标系表示，three中默认点的坐标为(0，0，0)
+     *
+     * THREE中的线: 一条线由点，材质和颜色组成
+     *
+     * THREE中没有单独画点的函数，必须把点放到THREE.Geometry形状中，
+     */
+    var scene,
+        camera,
+        renderer,
+        light;
+
+    function initScene() {
+      scene = new THREE.Scene();
+    }
+
+    function initLight() {
+      light = new THREE.DirectionalLight(0x000000, 1.0, 0);
+      light.position.set(100, 100, 200);
+      scene.add(light);
+    }
+
+    function initObject() {
+      var geometry = new THREE.Geometry();
+      geometry.vertices.push( new THREE.Vector3( - 500, 0, 0 ) );
+      geometry.vertices.push( new THREE.Vector3( 500, 0, 0 ) );
+
+      for ( var i = 0; i <= 20; i ++ ) {
+
+        var line = new THREE.Line( geometry, new THREE.LineBasicMaterial( { color: 0x000000, opacity: 1 } ) );
+        line.position.z = ( i * 50 ) - 500;
+        scene.add( line );
+
+        var line = new THREE.Line( geometry, new THREE.LineBasicMaterial( { color: 0x000000, opacity: 1 } ) );
+        line.position.x = ( i * 50 ) - 500;
+        line.rotation.y = 90 * Math.PI / 180;
+        scene.add( line );
+
+      }
+    }
+
+    function initCamera() {
+      camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
+      camera.position.x = 0;
+      camera.position.y = 1000;
+      camera.position.z = 0;
+      camera.up.x = 0;
+      camera.up.y = 0;
+      camera.up.z = 1;
+      camera.lookAt({
+        x : 0,
+        y : 0,
+        z : 0
+      });
+    }
+
+    function initRenderer() {
+      renderer = new THREE.WebGLRenderer({
+        antialias : true
+      });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setClearColor(0x000000, 0);
+      document.body.appendChild(renderer.domElement);
+    }
+
+    function threeStart() {
+      initScene();
+      initLight();
+      initObject();
+      initCamera();
+      initRenderer();
+      renderer.clear();
+      renderer.render(scene, camera);
+    }
+
+  </script>
 </head>
-<body>
+<body onload="threeStart()">
 
 </body>
 </html>

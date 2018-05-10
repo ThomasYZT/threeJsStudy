@@ -32,15 +32,15 @@
     */
     function initObject(){
       var geometry = new THREE.Geometry();
-      var material = new THREE.LineBasicMaterial({ vertexColors: THREE.VertexColors});
+      var material = new THREE.LineBasicMaterial({ vertexColors: THREE.VertexColors}); //THREE.VertexColors表示按顶点计算线条颜色
       var color1 = new THREE.Color(0x444444);
       var color2 = new THREE.Color(0xFF0000);
 
       var p1 = new THREE.Vector3(-100, 0, 100);
       var p2 = new THREE.Vector3(100, 0, -100);
-      geometry.vertices.push(p1);
+      geometry.vertices.push(p1); //几何体中的vertices变量，可以用来存放点
       geometry.vertices.push(p2);
-      geometry.colors.push(color1, color2);
+      geometry.colors.push(color1, color2); //geometry.colors表示线条顶点的颜色，材质中vertexColors等于THREE.VertexColors时，颜色才有效
 
       var line  = new THREE.Line(geometry, material, THREE.LinePieces);
       scene.add(line);

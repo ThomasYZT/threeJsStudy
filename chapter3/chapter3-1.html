@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>使用动画引擎Tween.js来创建动画</title>
+  <script src="../js/three.js"></script>
+  <script src="../js/Stats.js"></script>
+  <script src="../js/tween.min.js"></script>
+  <script>
+    /**
+     * 通过移动相机和移动物体来产生动画效果,如果动画稍微复杂一些，这种方式实现比较麻烦。
+     * 因此可以使用动画引擎来实现动画效果。和three.js紧密结合的动画引擎是Tween.js
+     */
+
+    var renderer;
+    var stats;
+    function initThree() {
+      renderer = new THREE.WebGLRenderer({
+        antialias : true
+      });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+      renderer.setClearColor(0xFFFFFF, 1.0);
+
+      stats = new Stats();
+      stats.setMode(1); // 0: fps, 1: ms
+      // 将stats的界面对应左上角
+      stats.domElement.style.position = 'absolute';
+      stats.domElement.style.left = '0px';
+      stats.domElement.style.top = '0px';
+      document.body.appendChild( stats.domElement );
+    }
+
+    var camera;
+    function initCamera() {
+      camera = new THREE.PerspectiveCamera(120, window.innerWidth / window.innerHeight, 1, 800);
+      camera.position.x = 0;
+      camera.position.y = 0;
+      camera.position.z = 600;
+      camera.up.x = 0;
+      camera.up.y = 1;
+      camera.up.z = 0;
+      camera.lookAt({
+        x : 0,
+        y : 0,
+        z : 0
+      });
+    }
+
+    var scene;
+    function initScene() {
+      scene = new THREE.Scene();
+    }
+
+    var light;
+    function initLight() {
+      light = new THREE.AmbientLight(0xFFFFFF);
+      light.position.set(100, 100, 200);
+      scene.add(light);
+      light = new THREE.PointLight(0x00FF00);
+      light.position.set(0, 0,300);
+      scene.add(light);
+    }
+    var mesh;
+    function initObject() {
+      var geometry = new THREE.CylinderGeometry( 100,150,400);
+      var material = new THREE.MeshLambertMaterial( { color:0xFFFF00} );
+      mesh = new THREE.Mesh( geometry,material);
+      mesh.position = new THREE.Vector3(0,0,0);
+      scene.add(mesh);
+    }
+
+    function initTween() {
+      new TWEEN.Tween( mesh.position)
+          .to( { x: -400 }, 3000 ).repeat( Infinity ).start();
+    }
+
+    function threeStart() {
+      initThree();
+      initCamera();
+      initScene();
+      initLight();
+      initObject();
+      initTween();
+      animation();
+
+      // setInterval( function () {
+      //   stats.begin();
+      //   // 你的每一帧的代码
+      //   stats.end();
+      // }, 1000 / 60 );
+    }
+    function animation()
+    {
+      //renderer.clear();
+      //camera.position.x =camera.position.x +1;
+
+      renderer.render(scene, camera);
+      requestAnimationFrame(animation);
+      TWEEN.update();
+      stats.update();
+    }
+  </script>
+</head>
+<body onload="threeStart();">
+
+</body>
+</html>
