@@ -8,35 +8,41 @@
 <body>
   <script>
     /**
+     * 我们需要3个组件，才能把物体渲染到浏览器中
      *
-     * @desc 我们需要3个组件，才能把物体渲染到浏览器中
+     * 场景：场景只有一种，是所有物体的容器，若要显示一个物体，就要把物体对象添加到场景容器中
+     *
+     * 相机：相机有很多种，决定场景中哪个角度的景色会显示出来
+     *
+     * 渲染器： 决定渲染的结果应该显示在页面的什么元素上面，并且以怎样的方式来绘制
+     *         渲染器randerer的domElement元素，是渲染器的画布，所有的渲染都是画在domElement元素上的
      */
 
     //创建场景
     var scene =  new THREE.Scene();
 
+    //创建3d对象，放入场景中
+    var geometry = new THREE.CubeGeometry(15,15,15);  //创建一个几何体，这里是长方体或正方体
+    var material = new THREE.MeshBasicMaterial({color: 0xEE3B3B, opacity: 0.4});
+    var cube = new THREE.Mesh(geometry,material);
+    scene.add(cube);
+
     //创建透视相机
     var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
     camera.position.z = 100;
+    camera.position.y = 50;
 
     //创建渲染器
     var renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);//设置渲染器的大小为窗口的内宽度，也就是内容区的宽度
     document.body.appendChild(renderer.domElement);
-    document.body.appendChild(renderer.domElement);
-
-    //创建3d对象，放入场景中
-    var geometry = new THREE.CubeGeometry(5,5,5);
-    var material = new THREE.MeshBasicMaterial({color: 0xEE3B3B});
-    var cube = new THREE.Mesh(geometry,material);
-    scene.add(cube);
-
 
     //循环动画
     function render() {
-        requestAnimationFrame(render);
+        requestAnimationFrame(render); //该函数就是让浏览器去执行一次参数中的函数，此处实现循环
         cube.rotation.x += 0.1;
         cube.rotation.y += 0.1;
+        //真正开始渲染场景
         renderer.render(scene, camera);
     }
     render();
