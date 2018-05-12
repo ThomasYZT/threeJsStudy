@@ -13,18 +13,85 @@
      * trhee中，光源用Light表示，它是所有光源的基类
      *
      * THREE.Light 光源基类
-     *   THREE.AmbientLight 环境光
-     *   THREE.SpotLight 聚光灯
+     *   THREE.AmbientLight 环境光  环境光是经过多次反射的光，无法判断其最初的方向(光线来自于任何方向)，环境光照射下的物体无论法向量如何都表现同样的明暗程度
+     *   THREE.SpotLight 聚光灯  聚光灯的光线从一个椎体射出，在被照射的物体身上产生聚光的效果
      *   THREE.AreaLight 区域光
-     *   THREE.PointLight 点光源
+     *   THREE.PointLight 点光源  点光源放射的光线都来自同一点，向四面八方辐射，如蜡烛的光。
      *   THREE.DirectionalLight 方向光
      *
      * 材质与光源的关系:
      *
+     *   什么是材质? 即物体的材料和质感的结合，在渲染程序中是是物体表面可视属性的结合，包括色彩、纹理、光滑度、透明度、反射率、折射率、发光度等，
+     *             正是这些属性，我们才能识别三维中的模型是什么做成的，才能让三维虚拟世界如此真实。
+     *
+     *   材质不止如此? 材质的真相是光，离开光是无法提现材质的，如同现实世界，离开光我们无法辨别一个物体的材质如何，另外彩色广源下也很难辨别物体
+     *               表面的颜色，而在白色光源照射下则很容易，
+     *
+     * Lambert材质: 最常见的材质之一,这是在灰暗的或不光滑的表面产生均匀散射而形成的材质类型,比如一张纸就是lambert表面，
+     *             Lambert材质会受环境光的影响，呈现环境光的颜色，与材质本身颜色关系不大。
      */
+
+    var scene,
+        camera,
+        renderer,
+        light,
+        mesh;
+
+    function initScene() {
+        scene = new THREE.Scene();
+    }
+
+    function initLight() {
+        light = new THREE.AmbientLight(0xFFFFFF);
+        light.position.set(100, 100, 200);
+        scene.add(light);
+    }
+
+    function initObject() {
+        var geometry = new THREE.CubeGeometry(200, 100, 50, 4, 4);
+        //var material = new THREE.MeshLambertMaterial( { color:0xFFFFFF} );
+        var material = new THREE.MeshLambertMaterial( { color:0x880000} );
+        mesh = new THREE.Mesh(geometry, material);
+        mesh.position = new THREE.Vector3(0,0,0);
+        scene.add(mesh);
+    }
+
+    function initCamera() {
+        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
+        camera.position.x = 600;
+        camera.position.y = 0;
+        camera.position.z = 600;
+        camera.up.x = 0;
+        camera.up.y = 1;
+        camera.up.z = 0;
+        camera.lookAt({
+            x : 0,
+            y : 0,
+            z : 0
+        });
+    }
+
+    function initRenderer() {
+        renderer = new THREE.WebGLRenderer({
+            antialias : true
+        });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+        renderer.setClearColor(0xFFFFFF, 1.0);
+    }
+
+    function threeStart() {
+        initRenderer();
+        initCamera();
+        initScene();
+        initLight();
+        initObject();
+        renderer.clear();
+        renderer.render(scene, camera);
+    }
   </script>
 </head>
-<body>
+<body onload="threeStart();">
 
 </body>
 </html>
