@@ -17,7 +17,7 @@
      *   THREE.SpotLight 聚光灯  聚光灯的光线从一个椎体射出，在被照射的物体身上产生聚光的效果
      *   THREE.AreaLight 区域光
      *   THREE.PointLight 点光源  点光源放射的光线都来自同一点，向四面八方辐射，如蜡烛的光。
-     *   THREE.DirectionalLight 方向光
+     *   THREE.DirectionalLight 方向光(平行光) 是一组没有衰减的平行的光线，类似太阳光的效果
      *
      * 材质与光源的关系:
      *
@@ -42,15 +42,17 @@
     }
 
     function initLight() {
-        light = new THREE.AmbientLight(0xFFFFFF);
-        light.position.set(100, 100, 200);
+        // light = new THREE.AmbientLight(0xFFFFFF);
+        // light.position.set(100, 100, 200);
+        light = new THREE.DirectionalLight(0xFF00FF,1);
+        light.position.set(1,0,5);
         scene.add(light);
     }
 
     function initObject() {
         var geometry = new THREE.CubeGeometry(200, 100, 50, 4, 4);
         //var material = new THREE.MeshLambertMaterial( { color:0xFFFFFF} );
-        var material = new THREE.MeshLambertMaterial( { color:0x880000} );
+        var material = new THREE.MeshLambertMaterial( { color:0xFFFFFF} );
         mesh = new THREE.Mesh(geometry, material);
         mesh.position = new THREE.Vector3(0,0,0);
         scene.add(mesh);
@@ -77,7 +79,10 @@
         });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
-        renderer.setClearColor(0xFFFFFF, 1.0);
+        //renderer.setClearColor(0xFFFFFF, 1);
+
+
+
     }
 
     function threeStart() {
@@ -86,12 +91,11 @@
         initScene();
         initLight();
         initObject();
-        renderer.clear();
         renderer.render(scene, camera);
     }
   </script>
 </head>
-<body onload="threeStart();">
+<body onload="threeStart();" style="background-color: white;">
 
 </body>
 </html>
